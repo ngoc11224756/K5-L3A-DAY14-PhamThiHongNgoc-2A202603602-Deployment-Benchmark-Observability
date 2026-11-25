@@ -177,8 +177,13 @@ X-XSS-Protection: 1; mode=block
 
 ### Exercise 3.1 / 3.2: Deploy Agent Part 6 (`06-lab-complete/`)
 
-- **Platform:** *(Điền Railway hoặc Render sau khi deploy xong CP6)*
-- **Public URL:** *(Điền URL công khai sau khi deploy xong CP6)*
+- **Platform:** Railway (Docker build từ Root Directory `06-lab-complete`, sử dụng `06-lab-complete/railway.toml` + service Redis của Railway)
+- **Public URL:** https://k5-l3a-day14-phamthihongngoc-2a202603602-deploym-production.up.railway.app
+- **Kết quả tự kiểm tra CP6:**
+  - `GET /health` → `200` (`{"status":"ok","environment":"production",...}`)
+  - `GET /ready` → `200` (`{"status":"ready","redis":"ok"}`)
+  - `POST /ask` (không có `X-API-Key`) → `401`
+  - `POST /ask` (có `X-API-Key`) → `200`
 - **Screenshots:** `screenshots/dashboard.png`, `screenshots/running.png`, `screenshots/test.png` (chi tiết xem [DEPLOYMENT.md](DEPLOYMENT.md))
 
 ### So sánh `railway.toml` và `render.yaml`
@@ -398,3 +403,4 @@ Một số chỉ số đo thực tế từ script:
 - **CP4:** Dùng AI chạy kiểm thử `05-scaling-reliability/develop` (`/health`, `/ready`, `SIGTERM`) và `05-scaling-reliability/production` (`-p k5-day14-scaling --scale agent=3`, `test_stateless.py`), rồi dọn sạch stack. Đã đối chiếu trực tiếp output phân tải 3 instance và 10 messages trong Redis.
 - **CP5:** Dùng AI hỗ trợ viết code hoàn thiện các `TODO` trong `06-lab-complete/` (`config.py`, `redis_client.py`, `auth.py`, `rate_limiter.py`, `cost_guard.py`, `main.py`, `Dockerfile`, `docker-compose.yml`, `.dockerignore`, `.env.example`, `railway.toml`, `render.yaml`). Đã chạy kiểm chứng đầy đủ bằng `python check_production_ready.py` (không sửa script chấm) và đạt `PASS 12/12` (43/43 checks passed).
 - **CP7 & CP8:** Dùng AI hỗ trợ thêm metric `agent_question_length_chars`, tạo `ci/eval.yml`, bổ sung 2 mục `hpa`/`jwt` vào `KNOWLEDGE_BASE` trong `mock_llm.py` (không sửa `golden_dataset.jsonl`), sửa thiếu `PYTHONUSERBASE` trong `benchmark-observability/production/Dockerfile` để stack Docker chạy được, rồi chạy toàn bộ load test (`reports/`), Locust headless (`benchmark-results/`), thí nghiệm kích hoạt 4 alert firing và điền `BENCHMARK_REPORT.md` khớp 100% với số liệu JSON/CSV thực đo.
+- **CP6:** Dùng AI hướng dẫn cấu hình deploy `06-lab-complete/` lên Railway (Root Directory, gắn Redis `REDIS_URL`, `AGENT_API_KEY`, đồng bộ cổng Public Networking), kiểm tra trực tiếp `/health` (200), `/ready` (200), `/ask` (401/200) và hoàn thiện `DEPLOYMENT.md`.
